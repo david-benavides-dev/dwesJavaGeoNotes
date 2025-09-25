@@ -9,7 +9,9 @@ public record Note(long id, String title, String content, GeoPoint location, Ins
     public Note {
         if (title == null || title.isBlank()) throw new IllegalArgumentException("title requerido");
         if (title.length() < 3) throw new IllegalArgumentException("El título debe tener un mínimo de tres caracteres.");
-        if (content == null) content = ""; else content = content.trim();
+        if (content == null) content = ""; else {
+            content = content.trim();
+        }
         if (content.isEmpty()) content = "-";
         if (location == null) throw new IllegalArgumentException("location requerido");
         if (createdAt == null) createdAt = Instant.now();
