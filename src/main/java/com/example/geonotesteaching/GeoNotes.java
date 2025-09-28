@@ -36,7 +36,7 @@ public class GeoNotes {
      */
     private static long noteCounter = 1;
 
-    // La clase principal del programa. Contiene el menú interactivo para la CLI.
+//     La clase principal del programa. Contiene el menú interactivo para la CLI.
     public static void main(String[] args) {
         /*
          * Modo "examples":
@@ -74,6 +74,7 @@ public class GeoNotes {
                     case 3 -> filterNotes();
                     case 4 -> exportNotesToJson();
                     case 5 -> running = false;
+                    case 6 -> ShowMd();
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -86,6 +87,24 @@ public class GeoNotes {
         }
         System.out.println("¡Gracias por usar GeoNotes! 👋");
     }
+//Se comprueba si no hay notas y en tal caso muestra mensaje de error.
+//En caso de que haya coge el último registro de nota y lo muestra por consola.
+    private static void ShowMd() {
+        if (timeline.getNotes().isEmpty()) {
+            System.out.println("No hay Md creados.");
+            return;
+        }
+        Note nota = timeline.getNote(noteCounter);
+        MarkdownExporter objetoMd = new MarkdownExporter(nota, nota.location());
+        System.out.println("Md: " + objetoMd.export());
+    }
+
+//    public static void main(String[] args) {
+//        GeoPoint gp = new GeoPoint(80, 80);
+//        Note note = new Note(23,"fsd","asd", gp, Instant.now(), new Link("asdasd", "34534"));
+//        MarkdownExporter mde = new MarkdownExporter(note, gp);
+//        System.out.println(mde.export());
+//    }
 
     private static void printMenu() {
         System.out.println("\n--- Menú ---");
@@ -94,6 +113,7 @@ public class GeoNotes {
         System.out.println("3. Filtrar notas por palabra clave");
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
         System.out.println("5. Salir");
+        System.out.println("6. Exportar Markdown");
         System.out.print("Elige una opción: ");
     }
 

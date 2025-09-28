@@ -21,7 +21,7 @@ final class Describe {
             }            case Audio audio -> "🎵 Audio";
             case Link l -> "🔗 %s".formatted((l.label() == null || l.label().isEmpty()) ? l.url() : l.label());
             case Video v when v.seconds() > 120 -> "Video";
-            case Video v -> "\uD83C\uDFA5 Video";
+            case Video v -> "Video";
         };
     }
 }
