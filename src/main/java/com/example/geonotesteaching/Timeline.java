@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 // La clase 'Timeline' usa un 'SequencedMap' para mantener las notas en orden de inserción.
 // A diferencia de un HashMap, un 'SequencedMap' garantiza el orden y permite acceder
 // al primer y último elemento de forma eficiente.
+// Ajustada la indentación del text block.
+// Con "\"" se le dice que es una comilla literal y con "\\\"" se le dice que es \" al compilador.
 final class Timeline {
     private final Map<Long, Note> notes = new LinkedHashMap<>();
 
@@ -21,17 +23,17 @@ final class Timeline {
                 // Un 'text block' es una cadena de texto multilinea que no necesita
                 // concatenación ni caracteres de escape para las comillas.
                 .map(note -> """
-                        {
-                          "id": %d,
-                          "title": "%s",
-                          "content": "%s",
-                          "location": { "lat": %f, "lon": %f },
-                          "createdAt": "%s"
-                        }
-                        """.formatted(
-                            note.id(), note.title(), note.content(),
-                            note.location().lat(), note.location().lon(),
-                            note.createdAt()))
+                    {
+                      "id": %d,
+                      "title": "%s",
+                      "content": "%s",
+                      "location": { "lat": %f, "lon": %f },
+                      "createdAt": "%s"
+                    }
+                    """.formatted(
+                        note.id(), note.title().replace("\"","\\\""), note.content().replace("\"","\\\""),
+                        note.location().lat(), note.location().lon(),
+                        note.createdAt()))
                 .sorted(Comparator.reverseOrder())
                 .collect(Collectors.joining(",\n"));
             return """
