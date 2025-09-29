@@ -15,5 +15,6 @@ public record Note(long id, String title, String content, GeoPoint location, Ins
         if (content.isEmpty()) content = "-";
         if (location == null) throw new IllegalArgumentException("location requerido");
         if (createdAt == null) createdAt = Instant.now();
+
     }
 }

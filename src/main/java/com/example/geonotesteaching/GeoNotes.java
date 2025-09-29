@@ -75,7 +75,8 @@ public class GeoNotes {
                     case 4 -> exportNotesToJson();
                     case 5 -> running = false;
                     case 6 -> ShowMd();
-                    case 7 -> showLastNotes();
+                    case 7 -> getLatestNotes();
+                    case 8 -> where();
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -89,21 +90,20 @@ public class GeoNotes {
         System.out.println("¡Gracias por usar GeoNotes! 👋");
     }
 
-    private static void showLastNotes() {
-        if (timeline.getNotes().isEmpty()) {
-            System.out.println("No hay notas creadas.");
-            return;
-        }
-        int choice = Integer.parseInt(scanner.nextLine().trim());
-        System.out.println("Introduzca el número de últimas notas añadidas que desea ver: ");
-        var ultimasNotas = timeline.latest(choice);
+    //
+    private static void where() {
+        System.out.println("Introduce latitud: ");
+        double lat = scanner.nextDouble();
+        System.out.println("Introduce longitud: ");
+        double lon = scanner.nextDouble();
 
-        ultimasNotas.forEach(note -> System.out.printf("ID: %s | Title: %s | Content: %s | Region: %s | Attachment: %s%n",
-                note.id(), note.title(), note.content(), ;
+        var ubicacion = Match.where(new GeoPoint(lat, lon));
 
+        System.out.println("Ubicacion: " +ubicacion);
     }
-//Se comprueba si no hay notas y en tal caso muestra mensaje de error.
-//En caso de que haya coge el último registro de nota y lo muestra por consola.
+
+    // Se comprueba si no hay notas y en tal caso muestra mensaje de error.
+    // En caso de que haya coge el último registro de nota y lo muestra por consola.
     private static void ShowMd() {
         if (timeline.getNotes().isEmpty()) {
             System.out.println("No hay Md creados.");
@@ -113,13 +113,6 @@ public class GeoNotes {
         MarkdownExporter objetoMd = new MarkdownExporter(nota, nota.location());
         System.out.println("Md: " + objetoMd.export());
     }
-
-//    public static void main(String[] args) {
-//        GeoPoint gp = new GeoPoint(80, 80);
-//        Note note = new Note(23,"fsd","asd", gp, Instant.now(), new Link("asdasd", "34534"));
-//        MarkdownExporter mde = new MarkdownExporter(note, gp);
-//        System.out.println(mde.export());
-//    }
 
     private static void printMenu() {
         System.out.println("\n--- Menú ---");
@@ -193,6 +186,17 @@ public class GeoNotes {
             System.out.printf("ID: %d | %s | %s | loc=%s | adj=%s%n",
                     id, note.title(), note.content(), region, attachmentInfo);
         });
+    }
+
+    private static void getLatestNotes() {
+        System.out.println("Introduce el número de notas que deseas ver: ");
+        int choice = Integer.parseInt(scanner.nextLine().trim());
+        var latestNotes = timeline.latest(choice);
+
+        for (Note note : latestNotes) {
+            System.out.println(note.toString());
+        }
+
     }
 
     private static void filterNotes() {
