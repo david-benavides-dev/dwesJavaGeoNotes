@@ -92,14 +92,18 @@ public class GeoNotes {
 
     //
     private static void where() {
-        System.out.println("Introduce latitud: ");
-        double lat = scanner.nextDouble();
-        System.out.println("Introduce longitud: ");
-        double lon = scanner.nextDouble();
+        try {
+            System.out.println("Introduce latitud: ");
+            double lat = Double.parseDouble(scanner.nextLine());
+            System.out.println("Introduce longitud: ");
+            double lon = Double.parseDouble(scanner.nextLine());
 
-        var ubicacion = Match.where(new GeoPoint(lat, lon));
+            var ubicacion = Match.where(new GeoPoint(lat, lon));
 
-        System.out.println("Ubicacion: " +ubicacion);
+            System.out.println("Ubicacion: " + ubicacion);
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+        }
     }
 
     // Se comprueba si no hay notas y en tal caso muestra mensaje de error.
@@ -123,6 +127,7 @@ public class GeoNotes {
         System.out.println("5. Salir");
         System.out.println("6. Exportar Markdown");
         System.out.println("7. Listar últimas N");
+        System.out.println("8. Mostrar where");
         System.out.print("Elige una opción: ");
     }
 
@@ -139,11 +144,12 @@ public class GeoNotes {
          * Lectura robusta de números: mejor parsear desde nextLine() para controlar errores y limpieza del buffer.
          * (Si fuese una app real, haríamos bucles hasta entrada válida).
          */
-        System.out.print("Latitud: ");
-        var lat = Double.parseDouble(scanner.nextLine());
-        System.out.print("Longitud: ");
-        var lon = Double.parseDouble(scanner.nextLine());
+
         try {
+            System.out.print("Latitud: ");
+            var lat = Double.parseDouble(scanner.nextLine());
+            System.out.print("Longitud: ");
+            var lon = Double.parseDouble(scanner.nextLine());
 
             /*
              * RECORDS (Java 16):
@@ -161,6 +167,8 @@ public class GeoNotes {
             var note = new Note(noteCounter++, title, content, geoPoint, Instant.now(), null);
             timeline.addNote(note);
             System.out.println("✅ Nota creada con éxito.");
+        }catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
         } catch (IllegalArgumentException e) {
             System.out.println("❌ Error: " + e.getMessage());
         }
@@ -189,14 +197,17 @@ public class GeoNotes {
     }
 
     private static void getLatestNotes() {
-        System.out.println("Introduce el número de notas que deseas ver: ");
-        int choice = Integer.parseInt(scanner.nextLine().trim());
-        var latestNotes = timeline.latest(choice);
+        try {
+            System.out.println("Introduce el número de notas que deseas ver: ");
+            int choice = Integer.parseInt(scanner.nextLine().trim());
+            var latestNotes = timeline.latest(choice);
 
-        for (Note note : latestNotes) {
-            System.out.println(note.toString());
+            for (Note note : latestNotes) {
+                System.out.println(note.toString());
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
         }
-
     }
 
     private static void filterNotes() {
