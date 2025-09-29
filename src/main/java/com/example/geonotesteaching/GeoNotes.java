@@ -1,6 +1,7 @@
 package com.example.geonotesteaching;
 
 import java.time.Instant;
+import java.util.Map;
 import java.util.Scanner;
 
 /*
@@ -36,7 +37,7 @@ public class GeoNotes {
      */
     private static long noteCounter = 1;
 
-//     La clase principal del programa. Contiene el menú interactivo para la CLI.
+    //     La clase principal del programa. Contiene el menú interactivo para la CLI.
     public static void main(String[] args) {
         /*
          * Modo "examples":
@@ -49,7 +50,7 @@ public class GeoNotes {
             return;
         }
         System.out.println("--------------------------------------");
-        System.out.println("  📝 Bienvenid@ a la aplicación GeoNotes");
+        System.out.println("  Bienvenid@ a la aplicación GeoNotes");
         System.out.println("--------------------------------------");
         boolean running = true;
         while (running) {
@@ -77,17 +78,120 @@ public class GeoNotes {
                     case 6 -> ShowMd();
                     case 7 -> getLatestNotes();
                     case 8 -> where();
-                    default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
+                    case 9 -> advancedSearch();
+                    default -> System.out.println(" Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
                 /*
                  * Manejo de errores "clásico" (en Kotlin tendrías null-safety y Result más idiomáticos).
                  * Aquí mostramos un mensaje claro al usuario.
                  */
-                System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+                System.out.println(" Entrada no válida. Por favor, ingresa un número.");
             }
         }
         System.out.println("¡Gracias por usar GeoNotes! 👋");
+    }
+
+    private static void advancedSearch() {
+        printAdvancedSearchMenu();
+        int choice = Integer.parseInt(scanner.nextLine().trim());
+        switch (choice) {
+            case 1 -> latLonSearch();
+            case 2 -> keyWordSearch();
+            default -> System.out.println(" Opción no válida. Inténtalo de nuevo.");
+        }
+    }
+
+    private static void keyWordSearch() {
+        System.out.println("1. Por título\n2. Por contenido");
+        int choice = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Introduce la palabra de busqueda: ");
+        String palabra = scanner.nextLine();
+        wordComprobator(choice, palabra);
+    }
+
+
+    private static void areaSearch(double top, double left, double bottom, double right) {
+        GeoArea area = new GeoArea(new GeoPoint(top, left), new GeoPoint(bottom, right));
+        for (Map.Entry<Long, Note> entry : timeline.getNotes().entrySet()) {
+            Note note = entry.getValue();
+            GeoPoint gp = note.location();
+
+            if(Match.isInArea(gp, area)) {
+                System.out.println("ID: " + entry.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+            }
+        }
+    }
+
+    private static void latLonSearch() {
+        System.out.println("1. Latitud\n2. Longitud\n3. Ambos");
+        int choice = Integer.parseInt(scanner.nextLine().trim());
+        try {
+            if (choice == 1 || choice == 2) {
+                System.out.println("Introduce la coordenada mínima: ");
+                double min = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la coordenada máxima: ");
+                double max = Double.parseDouble(scanner.nextLine().trim());
+
+                latLonComprobator(choice, min, max);
+
+            } else if (choice == 3) {
+                System.out.println("Introduce la latitud máxima: ");
+                double top = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la longitud mínima: ");
+                double left = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la latitud mínima: ");
+                double bottom = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la longitud máxima: ");
+                double right = Double.parseDouble(scanner.nextLine().trim());
+
+                areaSearch(top, left, bottom, right);
+            } else {
+                System.out.println(" Elección no válida.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
+        }
+    }
+
+    private static void wordComprobator(int option, String texto) {
+        for (Map.Entry<Long, Note> elementoDelMapa : timeline.getNotes().entrySet()) {
+            Note note = elementoDelMapa.getValue();
+            if (option == 1) {
+                if (note.title().contains(texto)) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+                }
+            }
+            if (option == 2) {
+                if (note.content().contains(texto)) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+                }
+            }
+        }
+    }
+
+    private static void latLonComprobator(int option, double geoCoordinateMin, double geoCoordinateMax) {
+        for (Map.Entry<Long, Note> elementoDelMapa : timeline.getNotes().entrySet()) {
+            Note note = elementoDelMapa.getValue();
+            GeoPoint gp = note.location();
+            if (option == 1) {
+                if (gp.lat() >= geoCoordinateMin && gp.lat() <= geoCoordinateMax) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + gp.lat() + " Lon: " + gp.lon());
+                }
+            }
+            if (option == 2) {
+                if (gp.lon() >= geoCoordinateMin && gp.lon() <= geoCoordinateMax) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + gp.lat() + " Lon: " + gp.lon());
+                }
+            }
+        }
+    }
+
+    private static void printAdvancedSearchMenu() {
+        System.out.println("\n--- Buscar por criterio ---");
+        System.out.println("1. Buscar por lat/lon");
+        System.out.println("2. Buscar por palabra clave");
+
     }
 
     //
@@ -102,7 +206,7 @@ public class GeoNotes {
 
             System.out.println("Ubicacion: " + ubicacion);
         } catch (NumberFormatException e) {
-            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
         }
     }
 
@@ -128,6 +232,7 @@ public class GeoNotes {
         System.out.println("6. Exportar Markdown");
         System.out.println("7. Listar últimas N");
         System.out.println("8. Mostrar where");
+        System.out.println("9. Busqueda avanzada");
         System.out.print("Elige una opción: ");
     }
 
@@ -166,11 +271,11 @@ public class GeoNotes {
              */
             var note = new Note(noteCounter++, title, content, geoPoint, Instant.now(), null);
             timeline.addNote(note);
-            System.out.println("✅ Nota creada con éxito.");
-        }catch (NumberFormatException e) {
-            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+            System.out.println(" Nota creada con éxito.");
+        } catch (NumberFormatException e) {
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
         } catch (IllegalArgumentException e) {
-            System.out.println("❌ Error: " + e.getMessage());
+            System.out.println(" Error: " + e.getMessage());
         }
     }
 
@@ -206,7 +311,7 @@ public class GeoNotes {
                 System.out.println(note.toString());
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
         }
     }
 
@@ -232,7 +337,7 @@ public class GeoNotes {
 
     private static void exportNotesToJson() {
         /*
-         * INNER CLASS NO ESTÁTICA:
+         * INNER CLASS NO ESTATICA:
          * - Timeline.Render es una clase interna "no estática" (inner class).
          * - Por eso se instancia con: timeline.new Render()
          * - Así Render queda LIGADA a ESTA instancia de Timeline (y accede a sus 'notes').
