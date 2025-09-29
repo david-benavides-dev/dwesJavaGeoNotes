@@ -75,6 +75,7 @@ public class GeoNotes {
                     case 4 -> exportNotesToJson();
                     case 5 -> running = false;
                     case 6 -> ShowMd();
+                    case 7 -> showLastNotes();
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -86,6 +87,20 @@ public class GeoNotes {
             }
         }
         System.out.println("¡Gracias por usar GeoNotes! 👋");
+    }
+
+    private static void showLastNotes() {
+        if (timeline.getNotes().isEmpty()) {
+            System.out.println("No hay notas creadas.");
+            return;
+        }
+        int choice = Integer.parseInt(scanner.nextLine().trim());
+        System.out.println("Introduzca el número de últimas notas añadidas que desea ver: ");
+        var ultimasNotas = timeline.latest(choice);
+
+        ultimasNotas.forEach(note -> System.out.printf("ID: %s | Title: %s | Content: %s | Region: %s | Attachment: %s%n",
+                note.id(), note.title(), note.content(), ;
+
     }
 //Se comprueba si no hay notas y en tal caso muestra mensaje de error.
 //En caso de que haya coge el último registro de nota y lo muestra por consola.
@@ -114,6 +129,7 @@ public class GeoNotes {
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
         System.out.println("5. Salir");
         System.out.println("6. Exportar Markdown");
+        System.out.println("7. Listar últimas N");
         System.out.print("Elige una opción: ");
     }
 

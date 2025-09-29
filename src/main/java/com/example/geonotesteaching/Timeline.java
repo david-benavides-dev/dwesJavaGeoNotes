@@ -1,5 +1,6 @@
 package com.example.geonotesteaching;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -40,5 +41,17 @@ final class Timeline {
                     { "notes": [ %s ] }
                     """.formatted(notesList);
         }
+    }
+
+    public java.util.List<Note> latest(int n) {
+        // que devuelva las n notas más recientes (por createdAt descendente).
+        var notasOrdenadas = new ArrayList<Note>();
+        var allNotes = notes.values().stream().sorted().collect(Collectors.toCollection(ArrayList::new));
+
+        for(var i = 0; i < n; i++) {
+            notasOrdenadas.add(allNotes.get(i));
+        }
+
+        return notasOrdenadas;
     }
 }
