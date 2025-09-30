@@ -57,3 +57,94 @@ if (title.length() < 3) throw new IllegalArgumentException("El título debe tene
 if (content == null) content = ""; else content = content.trim();
 if (content.isEmpty()) content = "-";
 ```
+## A2. Equals/HashCode vs. Records (conceptual)
+### Enunciado Original: 
+ Objetivo: entender qué genera un record.  
+ 
+ • Crea una clase LegacyPoint (clásica, no record) con double lat, lon, equals, hashCode y toString
+ manuales.  
+ • Compara su uso con GeoPoint. Entrega: breve comentario en el código o README: ¿qué ventajas /
+ cuándo no usar record?  
+### Solución:
+Las ventajas de usar record son:  
+      - Genera automaticamente los getters y los setters.  
+      - Genera automaticamente el constructor.  
+      - Genera automaticamente lo equals(), toString() y hashCode.  
+      - Los campos son final por lo que no se cambiarán accidentalmente, esto sirve para tener un código más limpio.  
+      - Elimina código repetitivo de uso frecuente y facilita el mantenimiento y legibilidad.  
+      - Compatible con patrones sealed o pattern matching.  
+      
+¿Cuando no usar record?  
+- Cuando el constructor es complejo y necesitas mutabilidad de los campos una vez creado el objeto.  
+- Cuando necesitas extender otras clases, ya que solo pueden implementar interfaces.  
+- Cuando no te conviene usar todos los campos en equals() y hasCode().  
+```java
+public class LegacyPoint{
+    private double lat,lon;
+
+    public LegacyPoint(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    @Override
+    public String toString() {
+        return "LegacyPoint{} " + "latitud = " + lat + "longitud = " + lon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof LegacyPoint)) {
+            return false;
+        }else{
+            return this == o;
+        }
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat, lon);
+    }
+}
+```
+
+## Bloque B — Jerarquía sealed y switch moderno (25–35￿)
+### Enunciado original
+B1. Nuevo subtipo: Video  
+Objetivo: ampliar jerarquía sellada.  
+
+• Crea public record Video(String url, int width, int height, int seconds) implements
+Attachment.  
+• Actualiza Attachment (permits …) para incluir Video.  
+• Añade soporte en Describe.describeAttachment:  
+```java
+case Video v when v.seconds() > 120-> "￿ Vídeo largo";
+case Video v-> "￿ Vídeo";
+```
+• Exhaustividad: comprueba que el switch obliga a cubrir Video.  
+### Solución:
+Para comprobar la exhaustividad del switch la interfaz debe ser sellada y todos los subtipos enumerados explicitamente en switch. 
+Mientras cumplas estas condiciones el compilador no se quejará.
+```java
+package com.example.geonotesteaching;
+
+public record Video(String url, int width, int height, int seconds) implements Attachment {
+}
+```
+```java
+public sealed interface Attachment permits Audio, Link, Photo, Video {
+}
+```
+```java
+public static String describeAttachment(Attachment a) {
+        return switch (a) {
+            case Photo p when p.width() > 1920 -> "📷 Foto en alta definición (%d x %d)".formatted(p.width(), p.height());
+            case Photo p -> "📷 Foto";
+            case Audio audio when audio.duration() > 300-> {
+                var mins = audio.duration() / 60;
+                yield "￿ Audio (" + mins + " min)";
+            }            case Audio audio -> "🎵 Audio";
+            case Link l -> "🔗 %s".formatted(l.effectiveLabel());
+            case Video v when v.seconds() > 120 -> "Video";
+            case Video v -> "Video";
+        };
+```
