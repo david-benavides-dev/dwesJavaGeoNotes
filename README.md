@@ -36,3 +36,24 @@ Incluye Gradle Wrapper (scripts) para facilitar la ejecución.
      - F2. Comprobaciones nulas
 - [Notas sobre decisiones de diseño y Java vs Kotlin](#link)
 
+## Bloque A — Fundamentos y calentamiento
+## A1. Validación y excepciones
+### Enunciado Original:
+A1. Validación y excepciones  
+Objetivo: reforzar validación clásica y mensajes claros. 
+
+• En Note, añade validaciones adicionales:  
+– title → mínimo 3 caracteres.  
+– content → recorta con trim(); si queda vacío, usa "–".  
+• Maneja la excepción en el menú (ya lo hace) y muestra un mensaje útil.  
+
+Pista: usa el compact constructor del record.
+### Solución:
+En el record `Note` se añadieron validaciones adicionales mediante el `compact constructor`.  
+Se comprueba que el título cumpla el tamaño mínimo (lanzando una excepción `IllegalArgumentException` en el caso de que no se cumpla) y que el contenido se normalice (con `trim()`, sustituyendo por "-" cuando queda vacío).  
+De esta forma, se asegura la coherencia de los datos y se muestran mensajes de error claros al usuario cuando la entrada no es válida.  
+```java
+if (title.length() < 3) throw new IllegalArgumentException("El título debe tener un mínimo de tres caracteres.");
+if (content == null) content = ""; else content = content.trim();
+if (content.isEmpty()) content = "-";
+```
