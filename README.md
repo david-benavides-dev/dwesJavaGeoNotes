@@ -1,3 +1,6 @@
+## Alumno(s):
+- Nombre y Apellidos: David Benavides Foncubierta y Victor Gómez Tejada
+
 ## Introducción y primeros pasos
 
 Proyecto docente con Java clásico + moderno (records, sealed, text blocks, switch expression, pattern matching).
