@@ -107,9 +107,9 @@ public class LegacyPoint{
 }
 ```
 
-## Bloque B — Jerarquía sealed y switch moderno (25–35￿)
+## Bloque B — Jerarquía sealed y switch moderno
+## B1. Nuevo subtipo: Video  
 ### Enunciado original
-B1. Nuevo subtipo: Video  
 Objetivo: ampliar jerarquía sellada.  
 
 • Crea public record Video(String url, int width, int height, int seconds) implements
@@ -147,4 +147,34 @@ public static String describeAttachment(Attachment a) {
             case Video v when v.seconds() > 120 -> "Video";
             case Video v -> "Video";
         };
+```
+
+## B2. Formato corto vs. largo en switch
+### Enunciado original
+Objetivo: usar yield con bloques.  
+
+• Cambia alguna rama de Describe a bloque:  
+case Audio a when a.duration() > 300-> {
+var mins = a.duration() / 60;
+yield "￿ Audio (" + mins + " min)";
+}
+• Asegúrate de compilar y probar.
+### Solución
+Cuando el `switch` se usa como expresión para devolver un valor porque produce un resultado, se debe usar un `yield` para meter mas lógica dentro del `case` en cuestión.
+```java
+final class Describe {
+    public static String describeAttachment(Attachment a) {
+        return switch (a) {
+            case Photo p when p.width() > 1920 -> "📷 Foto en alta definición (%d x %d)".formatted(p.width(), p.height());
+            case Photo p -> "📷 Foto";
+            case Audio audio when audio.duration() > 300-> {
+                var mins = audio.duration() / 60;
+                yield "￿ Audio (" + mins + " min)";
+            }
+            case Audio audio -> "🎵 Audio";
+            case Link l -> "🔗 %s".formatted(l.effectiveLabel());
+            case Video v when v.seconds() > 120 -> "Video";
+            case Video v -> "Video";
+        };
+    }
 ```
