@@ -94,20 +94,24 @@ public class GeoNotes {
 
     private static void advancedSearch() {
         printAdvancedSearchMenu();
-        int choice = Integer.parseInt(scanner.nextLine().trim());
+        String choice = scanner.nextLine().trim();
         switch (choice) {
-            case 1 -> latLonSearch();
-            case 2 -> keyWordSearch();
+            case "1" -> latLonSearch();
+            case "2" -> keyWordSearch();
             default -> System.out.println(" Opción no válida. Inténtalo de nuevo.");
         }
     }
 
     private static void keyWordSearch() {
         System.out.println("1. Por título\n2. Por contenido");
-        int choice = Integer.parseInt(scanner.nextLine().trim());
-        System.out.println("Introduce la palabra de busqueda: ");
-        String palabra = scanner.nextLine();
-        wordComprobator(choice, palabra);
+        try {
+            int choice = Integer.parseInt(scanner.nextLine().trim());
+            System.out.println("Introduce la palabra de busqueda: ");
+            String palabra = scanner.nextLine();
+            wordComprobator(choice, palabra);
+        } catch (NumberFormatException e) {
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
+        }
     }
 
 
@@ -125,8 +129,9 @@ public class GeoNotes {
 
     private static void latLonSearch() {
         System.out.println("1. Latitud\n2. Longitud\n3. Ambos");
-        int choice = Integer.parseInt(scanner.nextLine().trim());
+
         try {
+            int choice = Integer.parseInt(scanner.nextLine().trim());
             if (choice == 1 || choice == 2) {
                 System.out.println("Introduce la coordenada mínima: ");
                 double min = Double.parseDouble(scanner.nextLine().trim());
@@ -191,7 +196,6 @@ public class GeoNotes {
         System.out.println("\n--- Buscar por criterio ---");
         System.out.println("1. Buscar por lat/lon");
         System.out.println("2. Buscar por palabra clave");
-
     }
 
     //
