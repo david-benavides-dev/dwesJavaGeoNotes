@@ -1,5 +1,5 @@
 ## Alumno(s):
-- Nombre y Apellidos: David Benavides Foncubierta y Victor Gómez Tejada
+- Nombre y Apellidos: David Benavides Foncubierta y Vìctor Gómez Tejada
 
 ## Introducción y primeros pasos
 
@@ -159,8 +159,9 @@ var mins = a.duration() / 60;
 yield "￿ Audio (" + mins + " min)";
 }
 • Asegúrate de compilar y probar.
-### Solución
-Cuando el `switch` se usa como expresión para devolver un valor porque produce un resultado, se debe usar un `yield` para meter mas lógica dentro del `case` en cuestión.
+### Solución:
+Cuando el `switch` se usa como expresión para devolver un valor porque produce un resultado, se debe usar un `yield` para meter mas lógica dentro del `case` en cuestión.  
+Compila porque el `switch` está devolviendo una expresión. Se usa un `yield` obligatorio para devolver una expresión del `case`. Todos los subtipos de `Attachment` están cubiertos.
 ```java
 final class Describe {
     public static String describeAttachment(Attachment a) {
