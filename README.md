@@ -1,7 +1,17 @@
+## Introducción y primeros pasos
 
+Proyecto docente con Java clásico + moderno (records, sealed, text blocks, switch expression, pattern matching).
+Incluye Gradle Wrapper (scripts) para facilitar la ejecución.
+
+### Ejecutar
+- IntelliJ: Abrir carpeta y ejecutar tarea Gradle `run` o `examples`.
+- Terminal:
+  ```bash
+  ./gradlew run
+  ./gradlew examples
+  ```
 
 ## Tabla de Contenidos
-- Introducción y primeros pasos
 - [Ejercicios realizados](#ejercicios-realizados)
   - Bloque A - Fundamentos y calentamientos
      - A1. Validación y excepciones
@@ -23,16 +33,3 @@
      - F2. Comprobaciones nulas
 - [Notas sobre decisiones de diseño y Java vs Kotlin](#link)
 
-
-### Introducción y primeros pasos
-
-Proyecto docente con Java clásico + moderno (records, sealed, text blocks, switch expression, pattern matching).
-Incluye Gradle Wrapper (scripts) para facilitar la ejecución.
-
-### Ejecutar
-- IntelliJ: Abrir carpeta y ejecutar tarea Gradle `run` o `examples`.
-- Terminal:
-  ```bash
-  ./gradlew run
-  ./gradlew examples
-  ```
