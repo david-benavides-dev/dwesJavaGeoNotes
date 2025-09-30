@@ -69,7 +69,7 @@ if (content.isEmpty()) content = "-";
 Las ventajas de usar record son:  
       - Genera automaticamente los getters y los setters.  
       - Genera automaticamente el constructor.  
-      - Genera automaticamente lo equals(), toString() y hashCode.  
+      - Genera automaticamente lo `equals()`, `toString()` y `hashCode()`.  
       - Los campos son final por lo que no se cambiarán accidentalmente, esto sirve para tener un código más limpio.  
       - Elimina código repetitivo de uso frecuente y facilita el mantenimiento y legibilidad.  
       - Compatible con patrones sealed o pattern matching.  
@@ -77,7 +77,7 @@ Las ventajas de usar record son:
 ¿Cuando no usar record?  
 - Cuando el constructor es complejo y necesitas mutabilidad de los campos una vez creado el objeto.  
 - Cuando necesitas extender otras clases, ya que solo pueden implementar interfaces.  
-- Cuando no te conviene usar todos los campos en equals() y hasCode().  
+- Cuando no te conviene usar todos los campos en `equals()` y `hasCode()`.  
 ```java
 public class LegacyPoint{
     private double lat,lon;
@@ -122,7 +122,7 @@ case Video v-> "￿ Vídeo";
 ```
 • Exhaustividad: comprueba que el switch obliga a cubrir Video.  
 ### Solución:
-Para comprobar la exhaustividad del switch la interfaz debe ser sellada y todos los subtipos enumerados explicitamente en switch. 
+Para comprobar la exhaustividad del switch la interfaz debe ser sellada y todos los subtipos enumerados explicitamente en `switch`. 
 Mientras cumplas estas condiciones el compilador no se quejará.
 ```java
 package com.example.geonotesteaching;
