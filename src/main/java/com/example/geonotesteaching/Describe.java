@@ -19,7 +19,7 @@ final class Describe {
                 var mins = audio.duration() / 60;
                 yield "￿ Audio (" + mins + " min)";
             }            case Audio audio -> "🎵 Audio";
-            case Link l -> "🔗 %s".formatted((l.label() == null || l.label().isEmpty()) ? l.url() : l.label());
+            case Link l -> "🔗 %s".formatted(l.effectiveLabel());
             case Video v when v.seconds() > 120 -> "Video";
             case Video v -> "Video";
         };
