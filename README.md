@@ -41,7 +41,6 @@ Incluye Gradle Wrapper (scripts) para facilitar la ejecución.
 ## Bloque A — Fundamentos y calentamiento
 ## A1. Validación y excepciones
 ### Enunciado Original:
-A1. Validación y excepciones  
 Objetivo: reforzar validación clásica y mensajes claros. 
 
 • En Note, añade validaciones adicionales:  
@@ -184,27 +183,61 @@ final class Describe {
 ## Bloque C — Text Blocks y exportación
 ## C1. Export JSON pretty
 ### Enunciado original
+Objetivo: mejorar legibilidad del JSON.
+- En Timeline.Render.export(), ajusta el text block para alinear y sangrar mejor.
+- Escapa comillas del content si hiciera falta (p. ej., replace("\"","\\\"") antes de formatted).
+
+### Solución
+Se mejoró la exportación a JSON en `Timeline.Render.export()`, ajustando la indentación del text block para mayor legibilidad.
+Además, se escaparon las comillas en title y content para garantizar un formato válido en la salida.
+```java
+{
+  "id": %d,
+  "title": "%s",
+  "content": "%s",
+  "location": { "lat": %f, "lon": %f },
+  "createdAt": "%s"
+}
+""".formatted(
+    note.id(), note.title().replace("\"","\\\""), note.content().replace("\"","\\\""),
+    note.location().lat(), note.location().lon(),
+    note.createdAt()))
+```
 
 ## C2. Export Markdown (extra)
 ### Enunciado original
+
+### Solución
 
 ## Bloque D — Colecciones y orden
 ## D1. Orden por fecha y límite
 ### Enunciado original
 
+### Solución
+
 ## D2. Búsqueda con varios criterios
 ### Enunciado original
+
+### Solución
 
 ## Bloque E — Pattern Matching + Record Patterns (Java 21)
 ## E1. instanceof con patrón
 ### Enunciado original
 
+### Solución
+
 ## E2. Record patterns en if o switch
 ### Enunciado original
+
+### Solución
 
 ## Bloque F — Errores y robustez
 ## F1. Manejo de InputMismatch/NumberFormat
 ### Enunciado original
 
+### Solución
+
 ## F2. Comprobaciones nulas
 ### Enunciado original
+
+### Solución
