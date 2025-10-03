@@ -179,3 +179,30 @@ final class Describe {
         };
     }
 ```
+## Bloque C — Text Blocks y exportación
+## C1. Export JSON pretty
+### Enunciado original
+
+## C2. Export Markdown (extra)
+### Enunciado original
+
+## Bloque D — Colecciones y orden
+## D1. Orden por fecha y límite
+### Enunciado original
+
+## D2. Búsqueda con varios criterios
+### Enunciado original
+
+## Bloque E — Pattern Matching + Record Patterns (Java 21)
+## E1. instanceof con patrón
+### Enunciado original
+
+## E2. Record patterns en if o switch
+### Enunciado original
+
+## Bloque F — Errores y robustez
+## F1. Manejo de InputMismatch/NumberFormat
+### Enunciado original
+
+## F2. Comprobaciones nulas
+### Enunciado original
