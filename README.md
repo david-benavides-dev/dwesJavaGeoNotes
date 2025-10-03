@@ -1,5 +1,7 @@
 ## Alumno(s):
-- Nombre y Apellidos: David Benavides Foncubierta y Vìctor Gómez Tejada
+Nombre y Apellidos: 
+- David Benavides Foncubierta
+- Vìctor Gómez Tejada
 
 ## Introducción y primeros pasos
 
