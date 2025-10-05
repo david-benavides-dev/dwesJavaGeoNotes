@@ -187,7 +187,84 @@ Objetivo: practicar text blocks.
 `# GeoNotes - [ID 1] Título — (lat, lon) — YYYY-MM-DD`
 
 ### Solución
-// TODO VICTOR
+Se creó la clase MarkdownExporter que genera un markDown usando un text block. El método `showMD()` crea una instancia de `MarkdownExporter` y la muestra. Los métodos `latLonSearch()`, `areaSearch()`  recorren el `Map<Long, Note>` y muestran los resultados para integrarlos con MarkdownExporter. Con el método `latLonComprobator()` se filtran las `Note` por coordenadas geográficas.
+```java
+public final class MarkdownExporter implements Exporter{
+    private Note note;
+    private GeoPoint location;
+
+    public MarkdownExporter(Note note, GeoPoint location) {
+        this.note = note;
+        this.location = location;
+    }
+
+    @Override
+    public String export() {
+        return """
+                # GeoNotes
+                [ID]: %d - Título: %s - (%.4f, %.4f) - %s
+                """.formatted(note.id(), note.title(), location.lat(), location.lon(), note.createdAt().atZone(ZoneId.of("Europe/Madrid")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+    }
+}
+
+```
+```java
+private static void ShowMd() {
+        if (timeline.getNotes().isEmpty()) {
+            System.out.println("No hay Md creados.");
+            return;
+        }
+        Note nota = timeline.getNote(noteCounter);
+        MarkdownExporter objetoMd = new MarkdownExporter(nota, nota.location());
+        System.out.println("Md: " + objetoMd.export());
+    }
+```
+```java
+private static void latLonSearch() {
+        System.out.println("1. Latitud\n2. Longitud\n3. Ambos");
+
+        try {
+            int choice = Integer.parseInt(scanner.nextLine().trim());
+            if (choice == 1 || choice == 2) {
+                System.out.println("Introduce la coordenada mínima: ");
+                double min = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la coordenada máxima: ");
+                double max = Double.parseDouble(scanner.nextLine().trim());
+
+                latLonComprobator(choice, min, max);
+
+            } else if (choice == 3) {
+                System.out.println("Introduce la latitud máxima: ");
+                double top = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la longitud mínima: ");
+                double left = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la latitud mínima: ");
+                double bottom = Double.parseDouble(scanner.nextLine().trim());
+                System.out.println("Introduce la longitud máxima: ");
+                double right = Double.parseDouble(scanner.nextLine().trim());
+
+                areaSearch(top, left, bottom, right);
+            } else {
+                System.out.println(" Elección no válida.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
+        }
+    }
+```
+```java
+ private static void areaSearch(double top, double left, double bottom, double right) {
+        GeoArea area = new GeoArea(new GeoPoint(top, left), new GeoPoint(bottom, right));
+        for (Map.Entry<Long, Note> entry : timeline.getNotes().entrySet()) {
+            Note note = entry.getValue();
+            GeoPoint gp = note.location();
+
+            if(Match.isInArea(gp, area)) {
+                System.out.println("ID: " + entry.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+            }
+        }
+    }
+```
 
 ## Bloque D — Colecciones y orden
 ## D1. Orden por fecha y límite
@@ -230,7 +307,80 @@ Objetivo: filtros encadenados.
 - Reutiliza `Match.isInArea` o crea un método auxiliar.
 
 ### Solución
-// TODO VICTOR
+Se utiliza `advancedSearch()` para interconectar `latLonSearch()` y `keyWordSearch()`. `latLonSearch()` pide las coordenadas y llama a `latLonComprobator()` y `areaSearch()` para aplicar el filtro geográfico.
+`keyWordSearch()` pide la palabra clave y llama a `wordComprobator()` para hacer el filtro de texto y este último filtra por palabra en `title` y `content`.
+```java
+ private static void advancedSearch() {
+        printAdvancedSearchMenu();
+        String choice = scanner.nextLine().trim();
+        switch (choice) {
+            case "1" -> latLonSearch();
+            case "2" -> keyWordSearch();
+            default -> System.out.println(" Opción no válida. Inténtalo de nuevo.");
+        }
+    }
+```
+```java
+private static void keyWordSearch() {
+        System.out.println("1. Por título\n2. Por contenido");
+        try {
+            int choice = Integer.parseInt(scanner.nextLine().trim());
+            System.out.println("Introduce la palabra de busqueda: ");
+            String palabra = scanner.nextLine();
+            wordComprobator(choice, palabra);
+        } catch (NumberFormatException e) {
+            System.out.println(" Entrada no válida. Por favor, ingresa un número.");
+        }
+    }
+```
+```java
+ private static void wordComprobator(int option, String texto) {
+        for (Map.Entry<Long, Note> elementoDelMapa : timeline.getNotes().entrySet()) {
+            Note note = elementoDelMapa.getValue();
+            if (option == 1) {
+                if (note.title().contains(texto)) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+                }
+            }
+            if (option == 2) {
+                if (note.content().contains(texto)) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+                }
+            }
+        }
+    }
+```
+```java
+ private static void latLonComprobator(int option, double geoCoordinateMin, double geoCoordinateMax) {
+        for (Map.Entry<Long, Note> elementoDelMapa : timeline.getNotes().entrySet()) {
+            Note note = elementoDelMapa.getValue();
+            GeoPoint gp = note.location();
+            if (option == 1) {
+                if (gp.lat() >= geoCoordinateMin && gp.lat() <= geoCoordinateMax) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + gp.lat() + " Lon: " + gp.lon());
+                }
+            }
+            if (option == 2) {
+                if (gp.lon() >= geoCoordinateMin && gp.lon() <= geoCoordinateMax) {
+                    System.out.println("ID: " + elementoDelMapa.getKey() + " Título: " + note.title() + " Lat: " + gp.lat() + " Lon: " + gp.lon());
+                }
+            }
+        }
+    }
+```
+```java
+ private static void areaSearch(double top, double left, double bottom, double right) {
+        GeoArea area = new GeoArea(new GeoPoint(top, left), new GeoPoint(bottom, right));
+        for (Map.Entry<Long, Note> entry : timeline.getNotes().entrySet()) {
+            Note note = entry.getValue();
+            GeoPoint gp = note.location();
+
+            if(Match.isInArea(gp, area)) {
+                System.out.println("ID: " + entry.getKey() + " Título: " + note.title() + " Lat: " + note.location().lat() + " Lon: " + note.location().lon());
+            }
+        }
+    }
+```
 
 ## Bloque E — Pattern Matching + Record Patterns (Java 21)
 ## E1. instanceof con patrón
